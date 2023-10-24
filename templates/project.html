@@ -1,0 +1,22 @@
+{{- /*gotype: github.com/sportshead/todo/project.Project*/ -}}
+{{$textColor := "text-black"}}
+{{$bgColor := "bg-white"}}
+{{if .Archived}}
+    {{$textColor = "text-gray-600"}}
+    {{$bgColor = "bg-yellow-100"}}
+{{end}}
+<div class="w-full rounded-lg py-6 shadow-xl px-10 {{$bgColor}}">
+    <div class="w-full py-2">
+        <h2 class="{{$textColor}} text-3xl font-bold mb-1">
+            {{.Name}}</h2>
+        <div class="{{$textColor}} text-opacity-40 text-lg font-normal leading-snug">
+             {{.Description | replaceNewlines}}
+        </div>
+    </div>
+    <hr class="text-gray-300 my-1">
+    <div hx-target="closest div" hx-swap="outerHTML">
+        {{range .Todos}}
+            {{ template "todo.html" . }}
+        {{end}}
+    </div>
+</div>

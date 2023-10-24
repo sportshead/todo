@@ -1,0 +1,51 @@
+{{- /*gotype: github.com/sportshead/todo.dashboardData*/ -}}
+<!DOCTYPE html>
+<html>
+{{ template "head.html" "Dashboard" }}
+
+<body class="bg-slate-50">
+<div class="px-10 py-9 flex-col justify-start items-start gap-2.5 inline-flex w-full">
+    <div
+            class="self-stretch flex-col justify-center items-start gap-0.5 flex w-full">
+        <h1 class="text-black text-5xl font-bold">Dashboard</h1>
+        <div class="text-black text-opacity-60 text-xl font-normal">
+            {{ len .Projects }} projects · 14/20 tasks
+        </div>
+
+        <div class="justify-start items-start gap-2.5 inline-flex py-2">
+            <button
+                    class="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 rounded border border-blue-600 justify-center items-center gap-3 flex">
+                <div class="w-6 h-6 relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
+                    </svg>
+                </div>
+                <div class="text-blue-600 text-base font-normal">
+                    New Project
+                </div>
+            </button>
+            <button
+                    class="px-5 py-2.5 bg-yellow-100 hover:bg-yellow-200 rounded border border-yellow-600 justify-center items-center gap-3 flex">
+                <div class="w-6 h-6 relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <div class="text-yellow-600 text-base font-normal">
+                    Show Archived
+                </div>
+            </button>
+        </div>
+    </div>
+    {{range .Projects}}
+        {{template "project.html" .}}
+    {{end}}
+</div>
+</body>
+
+</html>
