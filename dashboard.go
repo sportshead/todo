@@ -56,7 +56,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		data.DoneTodos += proj.DoneTodos
 	}
 
-	log.Info().Int64("rows", result.RowsAffected).Int("total_todos", data.TotalTodos).Int("done_todos", data.DoneTodos).Msg("got dashboard data")
+	log.Debug().Int64("rows", result.RowsAffected).Int("total_todos", data.TotalTodos).Int("done_todos", data.DoneTodos).Msg("got dashboard data")
 
 	err = templates.ExecuteTemplate(w, "dashboard.html", data)
 

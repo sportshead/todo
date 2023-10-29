@@ -4,7 +4,7 @@
 {{ template "head.html" "Dashboard" }}
 
 <body class="bg-slate-50">
-<div class="px-10 py-9 flex-col justify-start items-start gap-2.5 inline-flex w-full">
+<div class="px-10 py-9 flex-col justify-start items-start gap-2.5 inline-flex w-full" id="root">
     <div
             class="self-stretch flex-col justify-center items-start gap-0.5 flex w-full">
         <h1 class="text-black text-5xl font-bold">Dashboard</h1>
@@ -27,7 +27,9 @@
                 </div>
             </button>
             <button
-                    class="px-5 py-2.5 bg-yellow-100 hover:bg-yellow-200 rounded border border-yellow-600 justify-center items-center gap-3 flex">
+                    class="px-5 py-2.5 bg-yellow-100 hover:bg-yellow-200 rounded border border-yellow-600 justify-center items-center gap-3 flex"
+                    hx-swap="outerHTML" hx-select="#root" hx-target="#root" hx-get="/dashboard{{if not .ShowArchived}}?showArchived{{end}}" hx-push-url="true"
+            >
                 <div class="w-6 h-6 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                          stroke="currentColor" class="w-6 h-6">
