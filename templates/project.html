@@ -1,29 +1,42 @@
 {{- /*gotype: github.com/sportshead/todo/project.Data */ -}}
-{{$textColor := "text-black"}}
-{{$bgColor := "bg-white"}}
-{{if .Archived}}
-    {{$textColor = "text-gray-600"}}
-    {{$bgColor = "bg-yellow-100"}}
-{{end}}
-<div class="w-full rounded-lg py-6 shadow-xl px-10 {{$bgColor}}">
+{{ $textColor := "text-black" }}
+{{ $bgColor := "bg-white" }}
+{{- if .Archived -}}
+    {{ $textColor = "text-gray-600" }}
+    {{ $bgColor = "bg-yellow-100" }}
+{{- end -}}
+<div class="w-full rounded-lg py-6 shadow-xl px-10 {{ $bgColor }}">
     <div class="w-full py-2">
-        <h2 class="{{$textColor}} text-3xl font-bold mb-1">
-            {{.Name}}</h2>
-        <div class="{{$textColor}} text-opacity-40 text-lg font-normal leading-snug">
-             {{.Description | replaceNewlines}}
+        <h2 class="{{ $textColor }} text-3xl font-bold mb-1">{{ .Name }}</h2>
+        <div
+            class="{{ $textColor }} text-opacity-40 text-lg font-normal leading-snug"
+        >
+            {{ .Description | replaceNewlines }}
         </div>
     </div>
-    <hr class="text-gray-300 my-1">
-    <div hx-target="closest div" hx-swap="outerHTML" hx-get="/project/{{.ID}}/todos" hx-trigger="revealed" class="animate-pulse">
-        {{range loop .TotalTodos}}
+    <hr class="text-gray-300 my-1" />
+    <div
+        hx-target="closest div"
+        hx-swap="outerHTML"
+        hx-get="/project/{{ .ID }}/todos"
+        hx-trigger="revealed"
+        class="animate-pulse"
+    >
+        {{- range loop .TotalTodos -}}
             <div class="w-full my-1 flex items-center">
-                <input type="checkbox"
-                       class="flex-none w-5 h-5 p-1 rounded border-slate-300 shadow-sm"
-                       disabled autocomplete="off">
+                <input
+                    type="checkbox"
+                    class="flex-none w-5 h-5 p-1 rounded border-slate-300 shadow-sm"
+                    disabled
+                    autocomplete="off"
+                />
                 <div class="grow grid relative mx-2 items-center">
-                    <div class="h-2 bg-slate-300 rounded" style="width: {{randInt 2 8}}{{randInt 0 9}}%"></div>
+                    <div
+                        class="h-2 bg-slate-300 rounded"
+                        style="width: {{ randInt 2 8 }}{{ randInt 0 9 }}%"
+                    ></div>
                 </div>
             </div>
-        {{end}}
+        {{- end -}}
     </div>
 </div>

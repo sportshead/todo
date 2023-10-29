@@ -1,9 +1,9 @@
 {{- /*gotype: github.com/sportshead/todo/[]todo.Todo*/ -}}
 <div hx-target="closest div" hx-swap="outerHTML">
-    {{range .}}
-        {{ template "todo.html" . }}
-    {{end}}
-    {{if eq (len .) 0}}
+    {{- range . -}}
+        {{- template "todo.html" . -}}
+    {{- end -}}
+    {{- if eq (len .) 0 -}}
         No tasks found.
-    {{end}}
+    {{- end -}}
 </div>
