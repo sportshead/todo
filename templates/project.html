@@ -14,7 +14,7 @@
         </div>
     </div>
     <hr class="text-gray-300 my-1">
-    <div hx-target="closest div" hx-swap="outerHTML" hx-get="/project/{{.ID}}/todos" hx-trigger="load"  class="animate-pulse">
+    <div hx-target="closest div" hx-swap="outerHTML" hx-get="/project/{{.ID}}/todos" hx-trigger="revealed" class="animate-pulse">
         {{range loop .TotalTodos}}
             <div class="w-full my-1 flex items-center">
                 <input type="checkbox"

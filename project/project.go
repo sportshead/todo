@@ -111,7 +111,17 @@ func projectGetHandler(w http.ResponseWriter, r *http.Request) {
 func projectGetTodosHandler(w http.ResponseWriter, r *http.Request) {
 	log := hlog.FromRequest(r)
 
-	err := templates.ExecuteTemplate(w, ".html", nil)
+	data := []todo.Todo{}
+	result := db.Model(&todo.Todo{}).
+		Where("project_id = ?", pat.Param(r, "id")).
+		Find(&data)
+	if result.Error != nil {
+		log.Err(result.Error).Msg("db error")
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err := templates.ExecuteTemplate(w, "todos.html", data)
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
