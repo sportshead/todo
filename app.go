@@ -6,6 +6,7 @@ import (
 	"flag"
 	"github.com/sportshead/todo/project"
 	"html/template"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
@@ -30,6 +31,7 @@ var templates *template.Template
 
 //go:embed static/tailwind.css
 var staticFS embed.FS
+var db *gorm.DB
 
 func main() {
 	log.Logger = log.
@@ -37,18 +39,24 @@ func main() {
 		With().Caller().
 		Logger()
 
-	// https://stackoverflow.com/a/65215010
 	templates = template.Must(template.New("").Funcs(template.FuncMap{
+		// https://stackoverflow.com/a/65215010
 		"replaceNewlines": func(s string) template.HTML {
 			return template.HTML(strings.Replace(template.HTMLEscapeString(s), "\n", "<br>", -1))
 		},
+		"loop": func(n int) []interface{} {
+			return make([]interface{}, n)
+		},
+		// https://github.com/Masterminds/sprig/blob/581758eb7d96ae4d113649668fa96acc74d46e7f/functions.go#L207
+		"randInt": func(min, max int) int { return rand.Intn(max-min) + min },
 	}).ParseFS(templateFS, "templates/*.html"))
 
 	addr := flag.String("addr", "localhost:8080", "Address to listen on")
 	file := flag.String("file", "data.db", "SQLite database file")
 	flag.Parse()
 
-	db, err := gorm.Open(sqlite.Open(*file), &gorm.Config{})
+	var err error
+	db, err = gorm.Open(sqlite.Open(*file))
 	if err != nil {
 		log.Fatal().Err(err).Str("file", *file).Msg("failed to open database")
 	}
@@ -66,8 +74,8 @@ func main() {
 	log.Info().Str("file", *file).Msg("database migration complete")
 
 	root := goji.NewMux()
-	todo.Handle(root, templates)
-	project.Handle(root, templates)
+	todo.Handle(root, templates, db)
+	project.Handle(root, templates, db)
 
 	root.Handle(pat.New("/"), http.RedirectHandler("/dashboard", http.StatusFound))
 	root.Handle(pat.New("/static/*"), http.FileServer(http.FS(staticFS)))

@@ -2,57 +2,63 @@ package main
 
 import (
 	"github.com/sportshead/todo/project"
-	"github.com/sportshead/todo/todo"
+	"gorm.io/gorm"
 	"net/http"
 
 	"github.com/rs/zerolog/hlog"
 )
 
 type dashboardData struct {
-	Projects []project.Project
+	ShowArchived bool
+	Projects     *[]project.Data
+
+	TotalTodos int
+	DoneTodos  int
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	log := hlog.FromRequest(r)
 
-	err := templates.ExecuteTemplate(w, "dashboard.html", dashboardData{
-		Projects: []project.Project{{
-			ID:          1,
-			Name:        "My Project",
-			Description: "this is a description\nit can have multiple lines\nlike so",
-			Archived:    false,
-			Todos: []todo.Todo{
-				{
-					ID:          0,
-					Title:       "finish this project",
-					Description: "Very important!!!!!",
-					Done:        false,
-					ProjectID:   1,
-				},
-				{
-					ID:          1,
-					Title:       "execute order 66",
-					Description: "using the youngling slayer 2000\nmultiple lines as well",
-					Done:        false,
-					ProjectID:   1,
-				},
-				{
-					ID:          2,
-					Title:       "become iron man",
-					Description: "should be pretty easy",
-					Done:        true,
-					ProjectID:   1,
-				},
-				{
-					ID:          3,
-					Title:       "a super extremely long title name for no particular reason other then i feel like it",
-					Description: "",
-					Done:        false,
-					ProjectID:   1,
-				},
-			},
-		}},
-	})
+	err := r.ParseForm()
+	if err != nil {
+		log.Err(err).Msg("error parsing form")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	data := dashboardData{
+		ShowArchived: r.Form.Has("showArchived"),
+		Projects:     new([]project.Data),
+	}
+
+	var result *gorm.DB
+	if data.ShowArchived {
+		result = db.Model(&project.Project{}).
+			Joins("LEFT JOIN todos ON todos.project_id = projects.id").
+			Select("projects.*, COUNT(todos.id) AS total_todos, SUM(todos.done) AS done_todos").
+			Group("projects.id").
+			Find(data.Projects)
+	} else {
+		result = db.Model(&project.Project{}).
+			Joins("LEFT JOIN todos ON todos.project_id = projects.id").
+			Select("projects.*, COUNT(todos.id) AS total_todos, SUM(todos.done) AS done_todos").
+			Where("projects.archived = 0").
+			Group("projects.id").
+			Find(data.Projects)
+	}
+	if result.Error != nil {
+		log.Err(result.Error).Msg("db error")
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for _, proj := range *data.Projects {
+		data.TotalTodos += proj.TotalTodos
+		data.DoneTodos += proj.DoneTodos
+	}
+
+	log.Info().Int64("rows", result.RowsAffected).Int("total_todos", data.TotalTodos).Int("done_todos", data.DoneTodos).Msg("got dashboard data")
+
+	err = templates.ExecuteTemplate(w, "dashboard.html", data)
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")

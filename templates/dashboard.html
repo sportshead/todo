@@ -9,7 +9,7 @@
             class="self-stretch flex-col justify-center items-start gap-0.5 flex w-full">
         <h1 class="text-black text-5xl font-bold">Dashboard</h1>
         <div class="text-black text-opacity-60 text-xl font-normal">
-            {{ len .Projects }} projects · 14/20 tasks
+            {{ len .Projects }} projects · {{ .DoneTodos }}/{{ .TotalTodos }} tasks done
         </div>
 
         <div class="justify-start items-start gap-2.5 inline-flex py-2">
@@ -37,7 +37,7 @@
                     </svg>
                 </div>
                 <div class="text-yellow-600 text-base font-normal">
-                    Show Archived
+                    {{if .ShowArchived}}Hide{{else}}Show{{end}} Archived
                 </div>
             </button>
         </div>

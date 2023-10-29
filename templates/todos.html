@@ -1,0 +1,6 @@
+{{- /*gotype: github.com/sportshead/todo/project.Project*/ -}}
+<div hx-target="closest div" hx-swap="outerHTML">
+    {{range .Todos}}
+        {{ template "todo.html" . }}
+    {{end}}
+</div>

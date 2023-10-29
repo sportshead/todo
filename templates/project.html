@@ -1,4 +1,4 @@
-{{- /*gotype: github.com/sportshead/todo/project.Project*/ -}}
+{{- /*gotype: github.com/sportshead/todo/project.Data */ -}}
 {{$textColor := "text-black"}}
 {{$bgColor := "bg-white"}}
 {{if .Archived}}
@@ -14,9 +14,16 @@
         </div>
     </div>
     <hr class="text-gray-300 my-1">
-    <div hx-target="closest div" hx-swap="outerHTML">
-        {{range .Todos}}
-            {{ template "todo.html" . }}
+    <div hx-target="closest div" hx-swap="outerHTML" hx-get="/project/{{.ID}}/todos" hx-trigger="load"  class="animate-pulse">
+        {{range loop .TotalTodos}}
+            <div class="w-full my-1 flex items-center">
+                <input type="checkbox"
+                       class="flex-none w-5 h-5 p-1 rounded border-slate-300 shadow-sm"
+                       disabled autocomplete="off">
+                <div class="grow grid relative mx-2 items-center">
+                    <div class="h-2 bg-slate-300 rounded" style="width: {{randInt 2 8}}{{randInt 0 9}}%"></div>
+                </div>
+            </div>
         {{end}}
     </div>
 </div>

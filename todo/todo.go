@@ -2,6 +2,7 @@ package todo
 
 import (
 	"github.com/rs/zerolog/hlog"
+	"gorm.io/gorm"
 	"html/template"
 	"net/http"
 
@@ -20,9 +21,11 @@ type Todo struct {
 }
 
 var templates *template.Template
+var db *gorm.DB
 
-func Handle(mux *goji.Mux, t *template.Template) {
+func Handle(mux *goji.Mux, t *template.Template, d *gorm.DB) {
 	templates = t
+	db = d
 
 	todoMux := goji.SubMux()
 
