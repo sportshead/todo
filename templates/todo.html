@@ -7,8 +7,10 @@
     <div class="grow grid relative mx-2 items-center">
       <input type="text" name="title"
              class="peer w-full p-0.5 border-0 focus:ring-0 bg-inherit"
-             value="{{.Title}}" disabled>
-      <span class="h-[2px] w-full peer-disabled:w-0 inline-block bg-gray-200 motion-reduce:transition-none transition-[width] duration-1000 ease-in-out"></span>
+             value="{{.Title}}" readonly autocomplete="off">
+      <span class="h-[2px] w-full peer-read-only:w-0 inline-block bg-gray-200 motion-reduce:transition-none transition-[width] duration-1000 ease-in-out"></span>
     </div>
+    <input type="hidden" name="projectId" value="{{.ProjectID}}">
+    <input type="hidden" name="description" value="{{.Description}}">
   </form>
 </div>

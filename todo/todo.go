@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"html/template"
 	"net/http"
+	"strconv"
 
 	"goji.io"
 	"goji.io/pat"
@@ -58,7 +59,29 @@ func todoPutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = templates.ExecuteTemplate(w, ".html", nil)
+	id, err := strconv.Atoi(pat.Param(r, "id"))
+	if err != nil {
+		log.Err(err).Str("id", pat.Param(r, "id")).Msg("invalid id")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	projectId, err := strconv.Atoi(r.FormValue("projectId"))
+	if err != nil {
+		log.Err(err).Str("id", r.FormValue("projectId")).Msg("invalid project id")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	data := Todo{
+		ID:          uint(id),
+		Title:       r.FormValue("title"),
+		Description: r.FormValue("description"),
+		Done:        r.FormValue("done") == "on",
+		ProjectID:   uint(projectId),
+	}
+	db.Save(data)
+
+	err = templates.ExecuteTemplate(w, "todo.html", data)
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
