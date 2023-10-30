@@ -19,6 +19,8 @@ type Project struct {
 	Archived    bool
 
 	Todos []todo.Todo
+
+	Deleted gorm.DeletedAt
 }
 
 type Data struct {
@@ -47,7 +49,6 @@ func Handle(mux *goji.Mux, t *template.Template, d *gorm.DB) {
 
 	projectMux.HandleFunc(pat.Get("/:id/todos"), projectGetTodosHandler)
 
-	mux.HandleFunc(pat.Get("/project"), rootGetHandler)
 	mux.HandleFunc(pat.Post("/project"), rootPostHandler)
 	mux.Handle(pat.New("/project/*"), projectMux)
 }
@@ -59,7 +60,6 @@ func projectDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -71,7 +71,6 @@ func projectPutHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -103,7 +102,6 @@ func projectGetHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -125,7 +123,6 @@ func projectGetTodosHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -138,20 +135,6 @@ func rootPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-// list projects
-func rootGetHandler(w http.ResponseWriter, r *http.Request) {
-	log := hlog.FromRequest(r)
-
-	err := templates.ExecuteTemplate(w, ".html", nil)
-
-	if err != nil {
-		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }

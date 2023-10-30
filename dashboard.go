@@ -62,7 +62,6 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Err(err).Msg("template parse error")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
